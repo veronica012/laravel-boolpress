@@ -44,8 +44,23 @@ class PostController extends Controller
        ]);
 
        $dati = $request->all();
+
        $slug = Str::of($dati['title'])->slug('-');
+       $original_slug = $slug;
+       //verifico se lo slug esiste già nella tabella 'slug' nome colonna $slug valore
+       $post_exists = Post::where('slug', $slug)->first(); //get = collection di oggetti, first = un oggetto
+       // dd($post_exists);
+
+       $contatore = 0;
+       while($post_exists) {
+           $contatore++;
+           $slug = $original_slug . '-' . $contatore;
+           $post_exists = Post::where('slug', $slug)->first();
+       } //in questo modo lo slug sarà unico
+
+
        $dati['slug'] = $slug;
+       //salvo i dati
        $nuovo_post = new Post();
        $nuovo_post->fill($dati);
        $nuovo_post->save();
@@ -104,6 +119,19 @@ class PostController extends Controller
         $dati = $request->all();
         $slug = Str::of($dati['title'])->slug('-');
         $dati['slug'] = $slug;
+        //verifico se lo slug esiste già nella tabella 'slug' nome colonna $slug valore
+        $post_exists = Post::where('slug', $slug)->first(); //get = collection di oggetti, first = un oggetto
+        // dd($post_exists);
+
+        $contatore = 0;
+        while($post_exists) {
+            $contatore++;
+            $slug = $original_slug . '-' . $contatore;
+            $post_exists = Post::where('slug', $slug)->first();
+        }
+        //in questo modo lo slug sarà unico
+
+        $dati['slug'] = $slug;
 
         $post = Post::find($id);
         $post->update($dati);
@@ -124,7 +152,7 @@ class PostController extends Controller
 
             $post->delete();
             return redirect()->route('admin.posts.index');
-            
+
         } else {
             return abort('404');
         }
