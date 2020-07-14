@@ -34,7 +34,11 @@
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                   <!-- Left Side Of Navbar -->
                   <ul class="navbar-nav mr-auto">
-
+                    <li class="nav-item {{ Request::route()->getName() == 'posts.index' ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('posts.index') }}">
+                            Posts
+                        </a>
+                    </li>
                   </ul>
 
                   <!-- Right Side Of Navbar -->
