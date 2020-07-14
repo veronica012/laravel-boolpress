@@ -20,6 +20,11 @@
                     {{ $post->slug }}
                 </p>
                 <p>
+                    <strong>Category: </strong>
+                    {{ $post->category->name ?? '-' }}
+                </p>
+
+                <p>
                     <strong>Created at: </strong>
                     {{ $post->created_at }}
                 </p>

@@ -17,7 +17,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
+        // $posts = Post::all();
+        //riduciamo le query
+        $posts = Post::with('category')->get();
         return view('admin.posts.index', compact('posts'));
     }
 
@@ -28,7 +30,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('admin.posts.create');
+        //leggo le categorie dal db e le passo alla view in compact
+        $categories = Category::all();
+        return view('admin.posts.create', compact('categories'));
     }
 
     /**
@@ -97,7 +101,13 @@ class PostController extends Controller
         $post = Post::find($id);
 
         if($post) {
-            return view('admin.posts.edit', compact('post'));
+            $categories = Category::all();
+            //non si può più usare compact quindi:
+            $data = [
+                'post' => $post,
+                'categories' => $categories
+            ];
+            return view('admin.posts.edit', $data);
         } else {
             return abort('404');
         }
