@@ -31,11 +31,13 @@
                         <select id="category" class="form-control" name="category_id">
                             <option value="">Select category</option>
                             @foreach ($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                <option
+                                    {{ old('category_id') == $category->id ? 'selected' : ''}}
+                                    value="{{ $category->id }}">
+                                    {{ $category->name }}
+                                </option>
                             @endforeach
                         </select>
-
-
                     </div>
 
                     <button type="submit" class="btn btn-primary">Save</button>
