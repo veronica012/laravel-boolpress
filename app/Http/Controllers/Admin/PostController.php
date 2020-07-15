@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Post;
 use App\Category;
+use App\Tag;
 use Illuminate\Support\Str;
 
 class PostController extends Controller
@@ -19,7 +20,7 @@ class PostController extends Controller
     {
         // $posts = Post::all();
         //riduciamo le query
-        $posts = Post::with('category')->get();
+        $posts = Post::with('category', 'tags')->get();
         return view('admin.posts.index', compact('posts'));
     }
 
@@ -32,7 +33,14 @@ class PostController extends Controller
     {
         //leggo le categorie dal db e le passo alla view in compact
         $categories = Category::all();
-        return view('admin.posts.create', compact('categories'));
+
+        $tags = Tag::all();
+        $data = [
+            'categories' => $categories,
+            'tags' => $tags
+
+        ];
+        return view('admin.posts.create', $data);
     }
 
     /**
@@ -64,6 +72,12 @@ class PostController extends Controller
        $nuovo_post = new Post();
        $nuovo_post->fill($dati);
        $nuovo_post->save();
+
+       if(!empty($dati['tags'])) {
+
+           $nuovo_post->tags()->sync($dati['tags']);
+       }
+
        return redirect()->route('admin.posts.index');
     }
 
@@ -96,10 +110,13 @@ class PostController extends Controller
 
         if($post) {
             $categories = Category::all();
+            $tags = Tag::all();
             //non si può più usare compact quindi:
             $data = [
                 'post' => $post,
-                'categories' => $categories
+                'categories' => $categories,
+                'tags' => $tags
+
             ];
             return view('admin.posts.edit', $data);
         } else {
@@ -137,6 +154,14 @@ class PostController extends Controller
         $dati['slug'] = $slug;
         $post = Post::find($id);
         $post->update($dati);
+        if(!empty($dati['tags'])){
+
+            $post->tags()->sync($dati['tags']);
+        } else {
+            
+            $post->tags()->sync([]);
+        }
+
         return redirect()->route('admin.posts.index');
     }
 
