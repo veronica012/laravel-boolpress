@@ -19,6 +19,7 @@
                             <th>Title</th>
                             <th>Slug</th>
                             <th>Category</th>
+                            <th>Tags</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -35,6 +36,13 @@
                                     @else
                                         -
                                     @endif --}}
+                                </td>
+                                <td>
+                                    @forelse ($post->tags as $tag)
+                                        {{ $tag->name }} {{$loop->last ? '' : ', '}}
+                                    @empty
+                                        -
+                                    @endforelse
                                 </td>
                                 <td>
                                     <a class="btn btn-small btn-info"

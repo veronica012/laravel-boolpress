@@ -23,6 +23,14 @@
                     <strong>Category: </strong>
                     {{ $post->category->name ?? '-' }}
                 </p>
+                <p>
+                    <strong>Tags: </strong>
+                    @forelse ($post->tags as $tag)
+                        {{ $tag->name }} {{$loop->last ? '' : ', '}}
+                    @empty
+                        -
+                    @endforelse
+                </p>
 
                 <p>
                     <strong>Created at: </strong>
