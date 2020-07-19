@@ -81,6 +81,7 @@ class PostController extends Controller
            // dd($img_path);
            $dati['cover_image'] = $img_path;
        }
+      
        //alternativa image required e non serve la if
        //salvo i dati
        $nuovo_post = new Post();
@@ -174,7 +175,7 @@ class PostController extends Controller
             $img_path = Storage::put('uploads', $dati['image']);
             $dati['cover_image'] = $img_path;
         }
-        
+
         $post = Post::find($id);
         $post->update($dati);
         if(!empty($dati['tags'])){
