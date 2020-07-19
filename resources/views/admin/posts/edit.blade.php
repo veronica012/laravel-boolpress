@@ -16,7 +16,7 @@
                         </ul>
                     </div>
                 @endif
-                <form action="{{ route('admin.posts.update', ['post' => $post->id]) }}" method="post">
+                <form action="{{ route('admin.posts.update', ['post' => $post->id]) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="form-group">
@@ -27,6 +27,17 @@
                         <label for="testo">Article</label>
                         <textarea type="text" name="content" class="form-control" id="testo" placeholder="Scrivi qualcosa...">{{ old('content', $post->content) }}</textarea>
                     </div>
+                    <div class="form-group">
+                        <label for="img">Cover image</label>
+                        <input type="file" name="image" class="form-control-file">
+                        @if ( $post->cover_image)
+                            <img src="{{ asset('storage/' . $post->cover_image)}}">
+                            @else
+                                <p>Image not available</p>
+                        @endif
+
+                    </div>
+
                     <div class="form-group">
                         <label for="category">Category</label>
                         <select id="category" class="form-control" name="category_id">

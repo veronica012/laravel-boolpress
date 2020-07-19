@@ -1,4 +1,4 @@
-<!--singolo post-->
+<!--singolo post pubblico-->
 
 @extends('layouts.app')
 
@@ -11,7 +11,6 @@
               <div class="cover_image">
                   <img src="{{ asset('storage/' . $post->cover_image)}}" alt="{{$post->title}}">
               </div>
-
           @endif
           <p>{{ $post->content }}</p>
           <p>Category:

@@ -56,9 +56,11 @@ class PostController extends Controller
         //validazione
         $request->validate([
            'title' => 'required|max:255|unique:posts,title',
-           'content' => 'required'
+           'content' => 'required',
+           'image' => 'image|max:1024'
        ]);
        $dati = $request->all();
+       //generazione dello slug dal titolo
        $slug = Str::of($dati['title'])->slug('-');
        $original_slug = $slug;
        //verifico se lo slug esiste già nella tabella ('slug' nome colonna $slug valore)
@@ -73,15 +75,18 @@ class PostController extends Controller
        $dati['slug'] = $slug;
 
        //caricamento immagine
-       $img_path =  Storage::put('uploads', $dati['image']);
-       // dd($img_path);
-       $dati['cover_image'] = $img_path;
-
+       //verificare se l'immagine esiste
+       if($dati['image']) {
+           $img_path =  Storage::put('uploads', $dati['image']);
+           // dd($img_path);
+           $dati['cover_image'] = $img_path;
+       }
+       //alternativa image required e non serve la if
        //salvo i dati
        $nuovo_post = new Post();
        $nuovo_post->fill($dati);
        $nuovo_post->save();
-
+//se sono stati selezionati dei tag li associo al post
        if(!empty($dati['tags'])) {
 
            $nuovo_post->tags()->sync($dati['tags']);
@@ -144,7 +149,8 @@ class PostController extends Controller
     {
         $request->validate([
             'title' => 'required|max:255|unique:posts,title,'.$id,
-            'content' => 'required'
+            'content' => 'required',
+            'image' => 'image|max:1024'
         ]);
         $dati = $request->all();
         $slug = Str::of($dati['title'])->slug('-');
@@ -161,6 +167,14 @@ class PostController extends Controller
         }
         //in questo modo lo slug sarà unico
         $dati['slug'] = $slug;
+
+        // verifico se l'utente ha caricato una foto
+        if($dati['image']) {
+            // carico l'immagine
+            $img_path = Storage::put('uploads', $dati['image']);
+            $dati['cover_image'] = $img_path;
+        }
+        
         $post = Post::find($id);
         $post->update($dati);
         if(!empty($dati['tags'])){
