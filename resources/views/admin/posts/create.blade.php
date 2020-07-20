@@ -29,7 +29,6 @@
                     <div class="form-group">
                         <label for="img">Cover image</label>
                         <input type="file" name="image" class="form-control-file">
-
                     </div>
                     <div class="form-group">
                         <label for="category">Category</label>

@@ -60,6 +60,7 @@ class PostController extends Controller
            'image' => 'image|max:1024'
        ]);
        $dati = $request->all();
+
        //generazione dello slug dal titolo
        $slug = Str::of($dati['title'])->slug('-');
        $original_slug = $slug;
@@ -76,12 +77,12 @@ class PostController extends Controller
 
        //caricamento immagine
        //verificare se l'immagine esiste
-       if($dati['image']) {
+       if(!empty($dati['image'])) {
            $img_path =  Storage::put('uploads', $dati['image']);
            // dd($img_path);
            $dati['cover_image'] = $img_path;
        }
-      
+
        //alternativa image required e non serve la if
        //salvo i dati
        $nuovo_post = new Post();
@@ -170,7 +171,7 @@ class PostController extends Controller
         $dati['slug'] = $slug;
 
         // verifico se l'utente ha caricato una foto
-        if($dati['image']) {
+        if(!empty($dati['image'])) {
             // carico l'immagine
             $img_path = Storage::put('uploads', $dati['image']);
             $dati['cover_image'] = $img_path;
