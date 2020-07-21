@@ -54,26 +54,27 @@ class PostController extends Controller
     {
         // dd($request->all());
         //validazione
-        $request->validate([
-           'title' => 'required|max:255|unique:posts,title',
-           'content' => 'required',
-           'image' => 'image|max:1024'
-       ]);
+       //  $request->validate([
+       //     'title' => 'required|max:255|unique:posts,title',
+       //     'content' => 'required',
+       //     'image' => 'image|max:1024'
+       // ]);
+       $this->validation($request);
        $dati = $request->all();
 
        //generazione dello slug dal titolo
-       $slug = Str::of($dati['title'])->slug('-');
-       $original_slug = $slug;
-       //verifico se lo slug esiste già nella tabella ('slug' nome colonna $slug valore)
-       $post_exists = Post::where('slug', $slug)->first(); //get = collection di oggetti, first = un oggetto
-       // dd($post_exists);
-       $contatore = 0;
-       while($post_exists) {
-           $contatore++;
-           $slug = $original_slug . '-' . $contatore;
-           $post_exists = Post::where('slug', $slug)->first();
-       } //in questo modo lo slug sarà unico
-       $dati['slug'] = $slug;
+       // $slug = Str::of($dati['title'])->slug('-');
+       // $original_slug = $slug;
+       // //verifico se lo slug esiste già nella tabella ('slug' nome colonna $slug valore)
+       // $post_exists = Post::where('slug', $slug)->first(); //get = collection di oggetti, first = un oggetto
+       // // dd($post_exists);
+       // $contatore = 0;
+       // while($post_exists) {
+       //     $contatore++;
+       //     $slug = $original_slug . '-' . $contatore;
+       //     $post_exists = Post::where('slug', $slug)->first();
+       // } //in questo modo lo slug sarà unico
+       $dati['slug'] = $this->generate_slug($dati['title']);
 
        //caricamento immagine
        //verificare se l'immagine esiste
@@ -149,26 +150,27 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'title' => 'required|max:255|unique:posts,title,'.$id,
-            'content' => 'required',
-            'image' => 'image|max:1024'
-        ]);
+        // $request->validate([
+        //     'title' => 'required|max:255|unique:posts,title,'.$id,
+        //     'content' => 'required',
+        //     'image' => 'image|max:1024'
+        // ]);
+        $this->validation($request, $id);
         $dati = $request->all();
-        $slug = Str::of($dati['title'])->slug('-');
-        $dati['slug'] = $slug;
-        $original_slug = $slug;
-        //verifico se lo slug esiste già nella tabella 'slug' nome colonna $slug valore
-        $post_exists = Post::where('slug', $slug)->first(); //get = collection di oggetti, first = un oggetto
-        // dd($post_exists);
-        $contatore = 0;
-        while($post_exists) {
-            $contatore++;
-            $slug = $original_slug . '-' . $contatore;
-            $post_exists = Post::where('slug', $slug)->first();
-        }
+        // $slug = Str::of($dati['title'])->slug('-');
+        // $dati['slug'] = $slug;
+        // $original_slug = $slug;
+        // //verifico se lo slug esiste già nella tabella 'slug' nome colonna $slug valore
+        // $post_exists = Post::where('slug', $slug)->first(); //get = collection di oggetti, first = un oggetto
+        // // dd($post_exists);
+        // $contatore = 0;
+        // while($post_exists) {
+        //     $contatore++;
+        //     $slug = $original_slug . '-' . $contatore;
+        //     $post_exists = Post::where('slug', $slug)->first();
+        // }
         //in questo modo lo slug sarà unico
-        $dati['slug'] = $slug;
+        $dati['slug'] = $this->generate_slug($dati['title']);
 
         // verifico se l'utente ha caricato una foto
         if(!empty($dati['image'])) {
@@ -207,5 +209,36 @@ class PostController extends Controller
         } else {
             return abort('404');
         }
+    }
+    private function validation( Request $request, $id = 0) {
+        if($id != 0) {
+            $request->validate([
+                'title' => 'required|max:255|unique:posts,title,'.$id,
+                'content' => 'required',
+                'image' => 'image|max:1024'
+            ]);
+        } else {
+            $request->validate([
+               'title' => 'required|max:255|unique:posts,title',
+               'content' => 'required',
+               'image' => 'image|max:1024'
+           ]);
+        }
+
+    }
+
+    private function generate_slug($title) {
+        $slug = Str::of($title)->slug('-');
+        $original_slug = $slug;
+        //verifico se lo slug esiste già nella tabella 'slug' nome colonna $slug valore
+        $post_exists = Post::where('slug', $slug)->first(); //get = collection di oggetti, first = un oggetto
+        // dd($post_exists);
+        $contatore = 0;
+        while($post_exists) {
+            $contatore++;
+            $slug = $original_slug . '-' . $contatore;
+            $post_exists = Post::where('slug', $slug)->first();
+        }
+        return $slug;
     }
 }
