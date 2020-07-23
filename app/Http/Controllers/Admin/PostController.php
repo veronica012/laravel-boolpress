@@ -155,8 +155,8 @@ class PostController extends Controller
         //     'content' => 'required',
         //     'image' => 'image|max:1024'
         // ]);
-        $this->validation($request, $id);
-        $dati = $request->all();
+        // $this->validation($request, $id);
+        // $dati = $request->all();
         // $slug = Str::of($dati['title'])->slug('-');
         // $dati['slug'] = $slug;
         // $original_slug = $slug;
@@ -169,9 +169,18 @@ class PostController extends Controller
         //     $slug = $original_slug . '-' . $contatore;
         //     $post_exists = Post::where('slug', $slug)->first();
         // }
-        //in questo modo lo slug sarà unico
-        $dati['slug'] = $this->generate_slug($dati['title']);
+        // in questo modo lo slug sarà unico
+        // $dati = $request->all();
+        // $title = $dati['title'];
+        // $new_title = $title;
+        // $title_exists = Post::where('title', $title)->first();
+        // while($title_exists) {
+        //     if($title) {
+                // $dati['slug'] = $this->generate_slug($dati['title']);
+            // };
+        // }
 
+        $dati = $request->all();
         // verifico se l'utente ha caricato una foto
         if(!empty($dati['image'])) {
             // carico l'immagine
